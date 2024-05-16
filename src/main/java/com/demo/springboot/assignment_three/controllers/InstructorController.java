@@ -3,29 +3,52 @@ package com.demo.springboot.assignment_three.controllers;
 
 import com.demo.springboot.assignment_three.entities.Instructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import com.demo.springboot.assignment_three.services.InstructorService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/instructor")
+@RequestMapping("/instructors")
 public class InstructorController {
 
     @Autowired
     private InstructorService instructorService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Instructor> getInstructorById(@PathVariable Long id) {
-        Optional<Instructor> instructor = instructorService.getInstructorById(id);
+    @GetMapping("/{id}")// GET
+    public ResponseEntity<Instructor> getInstructorById(@PathVariable Long id) {// Change this return type and check for differences
+        Optional<Instructor> instructor = instructorService.getById(id);
         if (instructor.isPresent()) {
             return ResponseEntity.ok(instructor.get());
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/all")// GET
+    public List<Instructor> getAllInstructors(){
+        return instructorService.getAllInstructors();
+    }
+
+
+    @PostMapping// POST
+    public ResponseEntity<Void> createInstructor(@RequestBody Instructor instructor) {
+        instructorService.saveInstructor(instructor);  // Assuming void return type
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/instructor/" + instructor.getId()).build();
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteInstructor(@PathVariable Long id) {
+            boolean deleted = instructorService.deleteById(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build(); // 204 No Content on successful deletion
+            } else {
+                return ResponseEntity.notFound().build();  // 404 Not Found if instructor not found
+            }
     }
 
 

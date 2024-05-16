@@ -1,0 +1,1 @@
+insert into instructors (id, name) values (1, "Nahid");

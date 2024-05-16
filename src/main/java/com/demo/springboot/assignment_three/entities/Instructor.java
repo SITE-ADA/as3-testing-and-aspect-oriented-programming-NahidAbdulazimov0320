@@ -20,13 +20,18 @@ public class Instructor {
     private String faculty;
 
     @Column
-    private Date dateOfBirth;
+    private Date date_of_birth;
 
-    private Instructor(String name, String faculty, Date dateOfBirth){
+    public Instructor() {
+    }
+
+    private Instructor(String name, String faculty, Date date_of_birth){
         this.name = name;
         this.faculty = faculty;
-        this.dateOfBirth = dateOfBirth;
+        this.date_of_birth = date_of_birth;
     }
+
+
 
     public String getName() {
         return name;
@@ -45,10 +50,18 @@ public class Instructor {
     }
 
     public Date getDateOfBirth() {
-        return dateOfBirth;
+        return date_of_birth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setDateOfBirth(Date date_of_birth) {
+        this.date_of_birth = date_of_birth;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

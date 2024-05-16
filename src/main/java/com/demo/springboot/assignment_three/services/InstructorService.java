@@ -29,8 +29,14 @@ public class InstructorService {
         instructorRepository.save(instructor);
     }
 
-    public void deleteById(Long id){
-        instructorRepository.deleteById(id);
+    public boolean deleteById(Long id){
+        Optional<Instructor> instructorOptional = instructorRepository.findById(id);
+        if (instructorOptional.isPresent()) {
+            instructorRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
