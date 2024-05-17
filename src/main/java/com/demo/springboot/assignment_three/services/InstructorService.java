@@ -25,9 +25,11 @@ public class InstructorService {
         return instructorRepository.findById(id);
     }
 
-    public void saveInstructor(Instructor instructor){// Should it return something?
+    public void createInstructor(Instructor instructor){// Should it return something?
         instructorRepository.save(instructor);
     }
+
+
 
     public boolean deleteById(Long id){
         Optional<Instructor> instructorOptional = instructorRepository.findById(id);
@@ -38,6 +40,34 @@ public class InstructorService {
             return false;
         }
     }
+
+    public Instructor updateInstructor(Long id, Instructor instructorDetails) {
+
+        Instructor instructor = instructorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+
+        instructor.setName(instructorDetails.getName());
+        instructor.setFaculty(instructorDetails.getFaculty());
+
+        return instructorRepository.save(instructor);
+    }
+
+// Patch
+//    public Instructor patchInstructor(Long id, Map<String, Object> updates) {
+//        Instructor instructor = instructorRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+//
+//        if (updates.containsKey("name")) {
+//            instructor.setName((String) updates.get("name"));
+//        }
+//        if (updates.containsKey("subject")) {
+//            instructor.setSubject((String) updates.get("subject"));
+//        }
+//
+//        return instructorRepository.save(instructor);
+//    }
+
+
 
 
 

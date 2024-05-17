@@ -33,15 +33,15 @@ public class InstructorController {
         return instructorService.getAllInstructors();
     }
 
-
     @PostMapping// POST
     public ResponseEntity<Void> createInstructor(@RequestBody Instructor instructor) {
-        instructorService.saveInstructor(instructor);  // Assuming void return type
+        instructorService.createInstructor(instructor);  // Assuming void return type
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/instructor/" + instructor.getId()).build();
     }
 
-    // DELETE
-    @DeleteMapping("/{id}")
+
+
+    @DeleteMapping("/{id}") // DELETE
     public ResponseEntity<Void> deleteInstructor(@PathVariable Long id) {
             boolean deleted = instructorService.deleteById(id);
             if (deleted) {
@@ -51,6 +51,28 @@ public class InstructorController {
             }
     }
 
+    @PutMapping("/{id}")// PUT
+    public ResponseEntity<Instructor> updateInstructor(@PathVariable Long id, @RequestBody Instructor instructorDetails) {
+
+        try {
+            Instructor updatedInstructor = instructorService.updateInstructor(id, instructorDetails);
+            return ResponseEntity.ok(updatedInstructor);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+// Patch
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<Instructor> patchInstructor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+//        try {
+//            Instructor updatedInstructor = instructorService.patchInstructor(id, updates);
+//            return ResponseEntity.ok(updatedInstructor);
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
 
 }
