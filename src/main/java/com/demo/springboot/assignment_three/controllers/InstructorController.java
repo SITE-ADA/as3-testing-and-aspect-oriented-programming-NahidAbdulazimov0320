@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.demo.springboot.assignment_three.services.InstructorService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -33,12 +34,6 @@ public class InstructorController {
         return instructorService.getAllInstructors();
     }
 
-    @PostMapping// POST
-    public ResponseEntity<Void> createInstructor(@RequestBody Instructor instructor) {
-        instructorService.createInstructor(instructor);  // Assuming void return type
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/instructor/" + instructor.getId()).build();
-    }
-
 
 
     @DeleteMapping("/{id}") // DELETE
@@ -50,6 +45,13 @@ public class InstructorController {
                 return ResponseEntity.notFound().build();  // 404 Not Found if instructor not found
             }
     }
+
+    @PostMapping// POST
+    public ResponseEntity<Void> createInstructor(@RequestBody Instructor instructor) {
+        instructorService.createInstructor(instructor);  // Assuming void return type
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/instructor/" + instructor.getId()).build();
+    }
+
 
     @PutMapping("/{id}")// PUT
     public ResponseEntity<Instructor> updateInstructor(@PathVariable Long id, @RequestBody Instructor instructorDetails) {
@@ -63,16 +65,16 @@ public class InstructorController {
         }
     }
 
-// Patch
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<Instructor> patchInstructor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-//        try {
-//            Instructor updatedInstructor = instructorService.patchInstructor(id, updates);
-//            return ResponseEntity.ok(updatedInstructor);
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Instructor> patchInstructor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        try {
+            Instructor updatedInstructor = instructorService.patchInstructor(id, updates);
+            return ResponseEntity.ok(updatedInstructor);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
 }

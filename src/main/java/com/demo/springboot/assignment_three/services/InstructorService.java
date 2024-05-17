@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -25,10 +26,6 @@ public class InstructorService {
         return instructorRepository.findById(id);
     }
 
-    public void createInstructor(Instructor instructor){// Should it return something?
-        instructorRepository.save(instructor);
-    }
-
 
 
     public boolean deleteById(Long id){
@@ -39,6 +36,10 @@ public class InstructorService {
         } else {
             return false;
         }
+    }
+
+    public void createInstructor(Instructor instructor){// Should it return something?
+        instructorRepository.save(instructor);
     }
 
     public Instructor updateInstructor(Long id, Instructor instructorDetails) {
@@ -52,20 +53,21 @@ public class InstructorService {
         return instructorRepository.save(instructor);
     }
 
-// Patch
-//    public Instructor patchInstructor(Long id, Map<String, Object> updates) {
-//        Instructor instructor = instructorRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Instructor not found"));
-//
-//        if (updates.containsKey("name")) {
-//            instructor.setName((String) updates.get("name"));
-//        }
-//        if (updates.containsKey("subject")) {
-//            instructor.setSubject((String) updates.get("subject"));
-//        }
-//
-//        return instructorRepository.save(instructor);
-//    }
+    public Instructor patchInstructor(Long id, Map<String, Object> updates) {
+
+        Instructor instructor = instructorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+
+        if (updates.containsKey("name")) {
+            instructor.setName((String) updates.get("name"));
+        }
+
+        if (updates.containsKey("faculty")) {
+            instructor.setFaculty((String) updates.get("subject"));
+        }
+
+        return instructorRepository.save(instructor);
+    }
 
 
 
