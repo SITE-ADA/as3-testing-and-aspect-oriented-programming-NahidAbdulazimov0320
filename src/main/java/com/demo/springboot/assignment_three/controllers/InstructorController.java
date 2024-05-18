@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.demo.springboot.assignment_three.services.InstructorService;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Map;
@@ -29,22 +30,11 @@ public class InstructorController {
         }
     }
 
-    @GetMapping("/all")// GET
+    @GetMapping("/all")// GET/All
     public List<Instructor> getAllInstructors(){
         return instructorService.getAllInstructors();
     }
 
-
-
-    @DeleteMapping("/{id}") // DELETE
-    public ResponseEntity<Void> deleteInstructor(@PathVariable Long id) {
-            boolean deleted = instructorService.deleteById(id);
-            if (deleted) {
-                return ResponseEntity.noContent().build(); // 204 No Content on successful deletion
-            } else {
-                return ResponseEntity.notFound().build();  // 404 Not Found if instructor not found
-            }
-    }
 
     @PostMapping// POST
     public ResponseEntity<Void> createInstructor(@RequestBody Instructor instructor) {
@@ -54,11 +44,11 @@ public class InstructorController {
 
 
     @PutMapping("/{id}")// PUT
-    public ResponseEntity<Instructor> updateInstructor(@PathVariable Long id, @RequestBody Instructor instructorDetails) {
+    public ResponseEntity<Void> updateInstructor(@PathVariable Long id, @RequestBody Instructor newInstructor) {
 
         try {
-            Instructor updatedInstructor = instructorService.updateInstructor(id, instructorDetails);
-            return ResponseEntity.ok(updatedInstructor);
+           instructorService.updateInstructor(id, newInstructor);
+           return ResponseEntity.ok().build();
 
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -67,14 +57,23 @@ public class InstructorController {
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Instructor> patchInstructor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<Void> patchInstructor(@PathVariable Long id, @RequestBody Instructor newInstructor) {
         try {
-            Instructor updatedInstructor = instructorService.patchInstructor(id, updates);
-            return ResponseEntity.ok(updatedInstructor);
+            instructorService.patchInstructor(id, newInstructor);
+            return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
+    @DeleteMapping("/{id}") // DELETE
+    public ResponseEntity<Void> deleteInstructor(@PathVariable Long id) {
+        boolean deleted = instructorService.deleteById(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build(); // 204 No Content on successful deletion
+        } else {
+            return ResponseEntity.notFound().build();  // 404 Not Found if instructor not found
+        }
+    }
 
 }

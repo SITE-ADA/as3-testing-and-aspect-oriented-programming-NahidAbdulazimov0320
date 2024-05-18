@@ -38,35 +38,27 @@ public class InstructorService {
         }
     }
 
-    public void createInstructor(Instructor instructor){// Should it return something?
+    public void createInstructor(Instructor instructor){
         instructorRepository.save(instructor);
     }
 
-    public Instructor updateInstructor(Long id, Instructor instructorDetails) {
-
+    public void updateInstructor(Long id, Instructor newInstructor) {
         Instructor instructor = instructorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Instructor not found"));
 
-        instructor.setName(instructorDetails.getName());
-        instructor.setFaculty(instructorDetails.getFaculty());
-
-        return instructorRepository.save(instructor);
+        newInstructor.setId(instructor.getId());
+        instructorRepository.save(newInstructor);
     }
 
-    public Instructor patchInstructor(Long id, Map<String, Object> updates) {
+    public void patchInstructor(Long id, Instructor newInstructor ) {
 
         Instructor instructor = instructorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Instructor not found"));
 
-        if (updates.containsKey("name")) {
-            instructor.setName((String) updates.get("name"));
-        }
+        instructor.setName(newInstructor.getName());
+        instructor.setFaculty(newInstructor.getFaculty());
 
-        if (updates.containsKey("faculty")) {
-            instructor.setFaculty((String) updates.get("subject"));
-        }
-
-        return instructorRepository.save(instructor);
+        instructorRepository.save(instructor);
     }
 
 
