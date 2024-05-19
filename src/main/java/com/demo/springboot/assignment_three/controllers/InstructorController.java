@@ -1,6 +1,7 @@
 package com.demo.springboot.assignment_three.controllers;
 
 
+import com.demo.springboot.assignment_three.dto.InstructorDTO;
 import com.demo.springboot.assignment_three.entities.Instructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,23 +32,24 @@ public class InstructorController {
     }
 
     @GetMapping("/all")// GET/All
-    public List<Instructor> getAllInstructors(){
+    public Iterable<Instructor> getAllInstructors(){
         return instructorService.getAllInstructors();
     }
 
 
     @PostMapping// POST
-    public ResponseEntity<Void> createInstructor(@RequestBody Instructor instructor) {
-        instructorService.createInstructor(instructor);  // Assuming void return type
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/instructor/" + instructor.getId()).build();
+    public ResponseEntity<Void> createInstructor(@RequestBody InstructorDTO input) {
+        Long newInstructorId  = instructorService.createInstructor(input);  // Assuming void return type
+
+         return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/instructors/" + newInstructorId).build();
     }
 
 
     @PutMapping("/{id}")// PUT
-    public ResponseEntity<Void> updateInstructor(@PathVariable Long id, @RequestBody Instructor newInstructor) {
+    public ResponseEntity<Void> updateInstructor(@PathVariable Long id, @RequestBody InstructorDTO input) {
 
         try {
-           instructorService.updateInstructor(id, newInstructor);
+           instructorService.updateInstructor(id, input);
            return ResponseEntity.ok().build();
 
         } catch (RuntimeException e) {

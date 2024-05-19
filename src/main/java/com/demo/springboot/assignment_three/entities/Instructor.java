@@ -25,7 +25,7 @@ public class Instructor {
     public Instructor() {
     }
 
-    private Instructor(String name, String faculty, Date date_of_birth){
+    public Instructor(String name, String faculty, Date date_of_birth){
         this.name = name;
         this.faculty = faculty;
         this.date_of_birth = date_of_birth;
