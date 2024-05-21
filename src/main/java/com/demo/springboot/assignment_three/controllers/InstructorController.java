@@ -3,15 +3,15 @@ package com.demo.springboot.assignment_three.controllers;
 
 import com.demo.springboot.assignment_three.dto.InstructorDTO;
 import com.demo.springboot.assignment_three.entities.Instructor;
+import com.demo.springboot.assignment_three.services.InstructorService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import com.demo.springboot.assignment_three.services.InstructorService;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -38,19 +38,40 @@ public class InstructorController {
 
 
     @PostMapping// POST
-    public ResponseEntity<Void> createInstructor(@RequestBody InstructorDTO input) {
-        Long newInstructorId  = instructorService.createInstructor(input);  // Assuming void return type
+    public ResponseEntity createInstructor(@Valid @RequestBody InstructorDTO input, BindingResult bindingResult) {
 
-         return ResponseEntity.status(HttpStatus.CREATED).header("Location", "/instructors/" + newInstructorId).build();
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Long newInstructorId  = instructorService.createInstructor(input);  // Assuming void return type
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .header("Location", "/instructors/" + newInstructorId).build();
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
 
     @PutMapping("/{id}")// PUT
-    public ResponseEntity<Void> updateInstructor(@PathVariable Long id, @RequestBody InstructorDTO input) {
+    public ResponseEntity updateInstructor(@PathVariable Long id, @Valid @RequestBody InstructorDTO input, BindingResult bindingResult) {
+
+        if(!Objects.equals(id, input.getId())){
+            return ResponseEntity.notFound().build();
+        }
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+        }
 
         try {
-           instructorService.updateInstructor(id, input);
-           return ResponseEntity.ok().build();
+            instructorService.updateInstructor(id, input);
+            return ResponseEntity.ok().build();
 
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -59,9 +80,18 @@ public class InstructorController {
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> patchInstructor(@PathVariable Long id, @RequestBody Instructor newInstructor) {
+    public ResponseEntity patchInstructor(@PathVariable Long id, @Valid @RequestBody InstructorDTO input, BindingResult bindingResult) {
+
+        if(!Objects.equals(id, input.getId())){
+            return ResponseEntity.notFound().build();
+        }
+
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
+        }
+
         try {
-            instructorService.patchInstructor(id, newInstructor);
+            instructorService.patchInstructor(id, input);
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
