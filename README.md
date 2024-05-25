@@ -44,3 +44,7 @@ NS
 
 Report:
 This project involves creating two Spring Boot applications to demonstrate various software engineering principles. The primary application (App1) manages CRUD operations for a single entity with robust data validation and employs the DTO pattern using MapStruct for automatic mapping. Logging is extensively implemented to capture input parameters, return values, and execution time for service methods, ensuring transparency and ease of debugging. Unit tests were designed for service class methods, and integration tests were developed for controller methods to ensure comprehensive functionality. The secondary application (App2) consumes the endpoints exposed by App1, listening on a different port and re-exposing them to users. Logging is also applied in App2 to maintain consistent traceability. Both applications are containerized using Docker, and Docker Compose is employed for simplified management of the containers. This setup allows easy deployment and scalability. To ensure continuous progress, regular commits to a Git repository were made, adhering to the project guidelines of committing at least once a day. The project also includes a video demonstration of the application’s features and usage instructions. The inclusion of detailed logs, extensive testing, and containerization underscores the project's focus on maintainability, reliability, and ease of deployment.
+
+
+Link:
+https://youtu.be/7LBF_6Zoilw
