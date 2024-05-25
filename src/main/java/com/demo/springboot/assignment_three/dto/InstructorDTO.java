@@ -3,9 +3,12 @@ package com.demo.springboot.assignment_three.dto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class InstructorDTO {
+
 
 
     private Long id;
@@ -50,5 +53,34 @@ public class InstructorDTO {
 
     public void setDob(Date dob) {
         this.dob = dob;
+    }
+
+//    public Date getDob() {
+//        return dob;
+//    }
+//
+//    public void setDob(Date dob) throws ParseException {
+//
+//        this.dob=dob;
+////try {
+////    this.dob = new SimpleDateFormat("dd/MM/yyyy").parse(dob);
+////}
+////catch (ParseException e){
+////    this.dob=null;
+////}
+//
+//    }
+
+
+
+
+    @Override
+    public String toString() {
+        return "InstructorDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", faculty='" + faculty + '\'' +
+                ", dob=" + dob +
+                '}';
     }
 }

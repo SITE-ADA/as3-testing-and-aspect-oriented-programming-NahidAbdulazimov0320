@@ -1,0 +1,123 @@
+package com.demo.springboot.assignment_three.units;
+
+import com.demo.springboot.assignment_three.controllers.InstructorController;
+import com.demo.springboot.assignment_three.dto.InstructorDTO;
+import com.demo.springboot.assignment_three.entities.Instructor;
+import com.demo.springboot.assignment_three.repository.InstructorRepository;
+import com.demo.springboot.assignment_three.services.InstructorService;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(InstructorController.class)
+public class InstructorControllerIntegrationTest {
+
+
+    
+    private final MockMvc mockMvc;
+
+    @MockBean
+    private InstructorService instructorService;
+
+    public InstructorControllerIntegrationTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
+    
+    public InstructorControllerIntegrationTest(){
+    
+    }
+
+
+    @Test
+    public void getAllInstructors_ShouldReturnInstructors() throws Exception {
+        Instructor instructor = new Instructor();
+        instructor.setId(1L);
+        instructor.setName("John Doe");
+
+        when(instructorService.getAllInstructors()).thenReturn(List.of(instructor));
+
+        mockMvc.perform(get("/instructors"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("John Doe"));
+    }
+
+    @Test
+    public void getInstructorById_ShouldReturnInstructor_WhenInstructorExists() throws Exception {
+        Instructor instructor = new Instructor();
+        instructor.setId(1L);
+        instructor.setName("John Doe");
+
+        when(instructorService.getById(1L)).thenReturn(Optional.of(instructor));
+
+        mockMvc.perform(get("/instructors/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("John Doe"));
+    }
+
+    @Test
+    public void getInstructorById_ShouldReturnNotFound_WhenInstructorDoesNotExist() throws Exception {
+        when(instructorService.getById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/instructors/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void createInstructor_ShouldReturnNewInstructorId() throws Exception {
+        InstructorDTO instructorDTO = new InstructorDTO();
+        instructorDTO.setName("John Doe");
+        instructorDTO.setFaculty("Engineering");
+        instructorDTO.setDob("1990-01-01");
+
+        when(instructorService.createInstructor(any(InstructorDTO.class))).thenReturn(1L);
+
+        mockMvc.perform(post("/instructors")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"John Doe\", \"faculty\": \"Engineering\", \"dateOfBirth\": \"1990-01-01\"}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+    }
+
+    @Test
+    public void updateInstructor_ShouldUpdateInstructor() throws Exception {
+        mockMvc.perform(put("/instructors/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"John Doe\", \"faculty\": \"Engineering\", \"dateOfBirth\": \"1990-01-01\"}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void patchInstructor_ShouldUpdateInstructor() throws Exception {
+        mockMvc.perform(patch("/instructors/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"John Doe\", \"faculty\": \"Engineering\", \"dateOfBirth\": \"1990-01-01\"}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteInstructor_ShouldReturnOk_WhenInstructorExists() throws Exception {
+        when(instructorService.deleteById(1L)).thenReturn(true);
+
+        mockMvc.perform(delete("/instructors/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteInstructor_ShouldReturnNotFound_WhenInstructorDoesNotExist() throws Exception {
+        when(instructorService.deleteById(1L)).thenReturn(false);
+
+        mockMvc.perform(delete("/instructors/1"))
+                .andExpect(status().isNotFound());
+    }
+}

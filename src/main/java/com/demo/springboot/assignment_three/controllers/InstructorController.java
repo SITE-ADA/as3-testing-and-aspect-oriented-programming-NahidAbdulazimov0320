@@ -5,6 +5,8 @@ import com.demo.springboot.assignment_three.dto.InstructorDTO;
 import com.demo.springboot.assignment_three.entities.Instructor;
 import com.demo.springboot.assignment_three.services.InstructorService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,15 @@ public class InstructorController {
 
     @Autowired
     private InstructorService instructorService;
+    Logger logger = LoggerFactory.getLogger(InstructorController.class);
 
     @GetMapping("/{id}")// GET
     public ResponseEntity<Instructor> getInstructorById(@PathVariable Long id) {// Change this return type and check for differences
+
+
+        logger.info("getById method called" + " | id: "+id);
+
+
         Optional<Instructor> instructor = instructorService.getById(id);
         if (instructor.isPresent()) {
             return ResponseEntity.ok(instructor.get());
@@ -40,6 +48,9 @@ public class InstructorController {
     @PostMapping// POST
     public ResponseEntity createInstructor(@Valid @RequestBody InstructorDTO input, BindingResult bindingResult) {
 
+        logger.info(input.toString());
+
+
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(bindingResult.getFieldErrors(), HttpStatus.BAD_REQUEST);
         }
@@ -51,6 +62,7 @@ public class InstructorController {
                     .header("Location", "/instructors/" + newInstructorId).build();
         }
         catch (Exception e){
+            logger.error(e.toString());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

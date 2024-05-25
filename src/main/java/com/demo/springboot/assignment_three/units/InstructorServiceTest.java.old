@@ -1,0 +1,135 @@
+package com.demo.springboot.assignment_three.units;
+
+import com.demo.springboot.assignment_three.dto.InstructorDTO;
+import com.demo.springboot.assignment_three.entities.Instructor;
+import com.demo.springboot.assignment_three.mapper.InstructorMapper;
+import com.demo.springboot.assignment_three.repository.InstructorRepository;
+import com.demo.springboot.assignment_three.services.InstructorService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class InstructorServiceTest {
+
+    @Mock
+    private InstructorRepository instructorRepository;
+
+    @Mock
+    private InstructorMapper instructorMapper;
+
+    @InjectMocks
+    private InstructorService instructorService;
+
+    private InstructorDTO instructorDTO;
+    private Instructor instructor;
+
+    @BeforeEach
+    void setUp() throws ParseException {
+        instructorDTO = new InstructorDTO();
+        instructorDTO.setName("John Doe");
+        instructorDTO.setFaculty("Engineering");
+        instructorDTO.setDob("1990-01-01");  ;
+
+        instructor = new Instructor();
+        instructor.setId(1L);
+        instructor.setName("John Doe");
+        instructor.setFaculty("Engineering");
+//        instructor.setDob("1990-01-01");
+    }
+
+    @Test
+    void getAllInstructors_ShouldReturnAllInstructors() {
+        when(instructorRepository.findAll()).thenReturn(List.of(instructor));
+
+        Iterable<Instructor> result = instructorService.getAllInstructors();
+
+        assertNotNull(result);
+        assertEquals(1, ((List<Instructor>) result).size());
+        verify(instructorRepository, times(1)).findAll();
+    }
+
+    @Test
+    void getById_ShouldReturnInstructor_WhenInstructorExists() {
+        when(instructorRepository.findById(1L)).thenReturn(Optional.of(instructor));
+
+        Optional<Instructor> result = instructorService.getById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals("John Doe", result.get().getName());
+        verify(instructorRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void getById_ShouldReturnEmpty_WhenInstructorDoesNotExist() {
+        when(instructorRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Optional<Instructor> result = instructorService.getById(1L);
+
+        assertFalse(result.isPresent());
+        verify(instructorRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void deleteById_ShouldReturnTrue_WhenInstructorExists() {
+        when(instructorRepository.findById(1L)).thenReturn(Optional.of(instructor));
+
+        boolean result = instructorService.deleteById(1L);
+
+        assertTrue(result);
+        verify(instructorRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteById_ShouldReturnFalse_WhenInstructorDoesNotExist() {
+        when(instructorRepository.findById(1L)).thenReturn(Optional.empty());
+
+        boolean result = instructorService.deleteById(1L);
+
+        assertFalse(result);
+        verify(instructorRepository, times(0)).deleteById(1L);
+    }
+
+    @Test
+    void createInstructor_ShouldReturnNewInstructorId() {
+        when(instructorMapper.instructorDTOToInstructor(any(InstructorDTO.class))).thenReturn(instructor);
+        when(instructorRepository.save(any(Instructor.class))).thenReturn(instructor);
+
+        Long result = instructorService.createInstructor(instructorDTO);
+
+        assertNotNull(result);
+        assertEquals(1L, result);
+        verify(instructorMapper, times(1)).instructorDTOToInstructor(instructorDTO);
+        verify(instructorRepository, times(1)).save(instructor);
+    }
+
+    @Test
+    void updateInstructor_ShouldUpdateInstructor_WhenInstructorExists() {
+        when(instructorRepository.findById(1L)).thenReturn(Optional.of(instructor));
+
+        instructorService.updateInstructor(1L, instructorDTO);
+
+        verify(instructorRepository, times(1)).save(instructor);
+    }
+
+    @Test
+    void patchInstructor_ShouldUpdateInstructor_WhenInstructorExists() {
+        when(instructorRepository.findById(1L)).thenReturn(Optional.of(instructor));
+
+        instructorService.patchInstructor(1L, instructorDTO);
+
+        verify(instructorRepository, times(1)).save(instructor);
+    }
+}
